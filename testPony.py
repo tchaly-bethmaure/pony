@@ -1,8 +1,10 @@
 from pony.orm import *
 import hashlib
+import getpass
 
 db = Database()
-db.bind('mysql', host='127.0.0.1', user='root', passwd='', db='pony_test')
+db.bind('sqlite', 'database.sqlite', create_db=True)
+#db.bind('mysql', host='127.0.0.1', user='root', passwd='', db='pony_test')
 
 class Utilisateur(db.Entity):
 	mail = PrimaryKey(str)
@@ -19,7 +21,9 @@ db.generate_mapping(create_tables=True)
 def ajouter_utilisateur(mail, nom, prenom, password, autorise,hote):
     Utilisateur(mail=mail, nom=nom, prenom=prenom, password=password, autorise=autorise,hote=hote)
 
-m = hashlib.md5()
+# on obtient le mail
 mail = raw_input("Mail : ")
-m.update(raw_input("Password : "))
+# et le pass
+m = hashlib.md5()
+m.update(getpass.getpass("Password : "))
 ajouter_utilisateur(mail, "test", "test", m.hexdigest(), True, False)
